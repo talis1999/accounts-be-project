@@ -1,5 +1,5 @@
 import express from "express";
-import { AppDataSource } from "./data-source";
+import { AppDataSource } from "./db";
 import { User } from "./entity/User";
 
 AppDataSource.initialize()
