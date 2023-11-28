@@ -1,4 +1,4 @@
-import express from "express";
+import * as express from "express";
 
 import accountRoutes from "./AccountRoutes";
 import { createNewUser, getUserById } from "../controllers/UserController";
