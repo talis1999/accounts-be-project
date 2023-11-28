@@ -3,7 +3,7 @@ import userServices from "../services/userServices";
 
 export const getUserById = async (req: Request, res: Response) => {
   try {
-    const user = await userServices.getUserById(Number(req.params.personId));
+    const user = await userServices.getUserById(Number(req.params.userId));
     if (!user) {
       return res.status(404).json({ error: "user not found" });
     }

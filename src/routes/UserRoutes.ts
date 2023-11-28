@@ -5,16 +5,14 @@ import { createNewUser, getUserById } from "../controllers/UserController";
 
 const router = express.Router();
 
-// Possible future changes -
-// 1. Change - persons -> users
-// 2. Add as auth flow
+// Possible future changes - Add auth flow
 
-router.use("/:personId/accounts", accountRoutes);
+router.use("/:userId/accounts", accountRoutes);
 
-// GET person by id
-router.get("/:personId", getUserById);
+// GET user by id
+router.get("/:userId", getUserById);
 
-// POST person
+// POST user
 router.post("/", createNewUser);
 
 export default router;
