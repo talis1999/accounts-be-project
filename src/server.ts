@@ -6,6 +6,8 @@ import userRoutes from "./routes/UserRoutes";
 
 AppDataSource.initialize()
   .then(async () => {
+    await AppDataSource.getRepository(User).delete({});
+
     await AppDataSource.manager.save(
       AppDataSource.manager.create(User, {
         name: "Karin",
@@ -13,7 +15,6 @@ AppDataSource.initialize()
         birthDate: new Date(),
       })
     );
-
     await AppDataSource.manager.save(
       AppDataSource.manager.create(User, {
         name: "Sans",
