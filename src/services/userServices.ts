@@ -7,6 +7,10 @@ interface NewUserData {
   birthDate: Date;
 }
 
+const getUsers = async (): Promise<User[]> => {
+  return await AppDataSource.getRepository(User).find({});
+};
+
 const getUserById = async (id: number): Promise<User | null> => {
   return await AppDataSource.getRepository(User).findOneBy({
     id,
@@ -19,6 +23,7 @@ const createNewUser = async (userData: NewUserData): Promise<User> => {
 };
 
 export default {
+  getUsers,
   getUserById,
   createNewUser,
 };
