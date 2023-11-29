@@ -1,7 +1,7 @@
 import "dotenv/config";
 import "reflect-metadata";
 import { DataSource } from "typeorm";
-import { User } from "./entity/User";
+import { User } from "./entities/User";
 
 const port: number = Number(process.env.DB_PORT || 5432);
 
