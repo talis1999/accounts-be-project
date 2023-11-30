@@ -44,7 +44,22 @@ export const createNewAccount = async (req: Request, res: Response) => {
   }
 };
 
-export const updateAccountActiveFlag = (req: Request, res: Response) => {
+export const updateAccountActiveFlag = async (req: Request, res: Response) => {
   const { activeFlag = true } = req.body;
-  res.status(201).json({});
+  const accountId: number = Number(req.params.accountId);
+
+  try {
+    const account = await accountServices.updateAccountsActiveFlag(
+      accountId,
+      activeFlag
+    );
+
+    if (!account) {
+      return res.status(404).json({ error: "account not found" });
+    }
+
+    res.status(204).json(account);
+  } catch (error) {
+    res.status(500).json({ error });
+  }
 };

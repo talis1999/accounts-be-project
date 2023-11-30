@@ -25,8 +25,22 @@ const createNewAccount = async (
   return await AppDataSource.getRepository(Account).save(newAccount);
 };
 
+const updateAccountsActiveFlag = async (
+  accountId: number,
+  activeFlag: boolean
+): Promise<Account | null> => {
+  const account = await getAccountById(accountId);
+  if (!account) return null;
+
+  return await AppDataSource.getRepository(Account).save({
+    ...account,
+    activeFlag,
+  });
+};
+
 export default {
   getAccounts,
   getAccountById,
   createNewAccount,
+  updateAccountsActiveFlag,
 };
