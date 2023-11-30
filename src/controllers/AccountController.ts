@@ -13,12 +13,13 @@ export const getAccounts = async (req: Request, res: Response) => {
 };
 
 export const getAccountById = async (req: Request, res: Response) => {
+  const userId: number = Number(req.params.userId);
   const accountId: number = Number(req.params.accountId);
 
   try {
     const account = await accountServices.getAccountById(accountId);
 
-    if (!account) {
+    if (!account || account.userId !== userId) {
       return res.status(404).json({ error: "account not found" });
     }
 
@@ -45,11 +46,14 @@ export const createNewAccount = async (req: Request, res: Response) => {
 };
 
 export const updateAccountActiveFlag = async (req: Request, res: Response) => {
-  const { activeFlag = true } = req.body;
+  const userId: number = Number(req.params.userId);
   const accountId: number = Number(req.params.accountId);
+
+  const { activeFlag = true } = req.body;
 
   try {
     const account = await accountServices.updateAccountsActiveFlag(
+      userId,
       accountId,
       activeFlag
     );

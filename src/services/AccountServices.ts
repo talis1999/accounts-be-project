@@ -26,11 +26,12 @@ const createNewAccount = async (
 };
 
 const updateAccountsActiveFlag = async (
+  userId: number,
   accountId: number,
   activeFlag: boolean
 ): Promise<Account | null> => {
   const account = await getAccountById(accountId);
-  if (!account) return null;
+  if (!account || account.userId !== userId) return null;
 
   return await AppDataSource.getRepository(Account).save({
     ...account,
