@@ -1,9 +1,31 @@
 import { Request, Response } from "express";
 import accountServices from "../services/AccountServices";
 
-export const getAccountById = (req: Request, res: Response) => {
-  const accountId: string = req.params.accountId;
-  res.status(200).json({});
+export const getAccounts = async (req: Request, res: Response) => {
+  const userId: number = Number(req.params.userId);
+  try {
+    const accounts = await accountServices.getAccounts(userId);
+
+    res.status(200).json(accounts);
+  } catch (error) {
+    res.status(500).json({ error });
+  }
+};
+
+export const getAccountById = async (req: Request, res: Response) => {
+  const accountId: number = Number(req.params.accountId);
+
+  try {
+    const account = await accountServices.getAccountById(accountId);
+
+    if (!account) {
+      return res.status(404).json({ error: "account not found" });
+    }
+
+    res.status(200).json(account);
+  } catch (error) {
+    res.status(500).json({ error });
+  }
 };
 
 export const createNewAccount = async (req: Request, res: Response) => {

@@ -8,8 +8,8 @@ interface NewAccountData {
   accountType: number;
 }
 
-const getAccounts = async (): Promise<Account[]> => {
-  return await AppDataSource.getRepository(Account).find({});
+const getAccounts = async (userId: number): Promise<Account[]> => {
+  return await AppDataSource.getRepository(Account).findBy({ userId });
 };
 
 const getAccountById = async (id: number): Promise<Account | null> => {
