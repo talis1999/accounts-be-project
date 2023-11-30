@@ -58,7 +58,7 @@ export const updateAccountActiveFlag = async (req: Request, res: Response) => {
       return res.status(404).json({ error: "account not found" });
     }
 
-    res.status(204).json(account);
+    res.status(200).json(account);
   } catch (error) {
     res.status(500).json({ error });
   }
