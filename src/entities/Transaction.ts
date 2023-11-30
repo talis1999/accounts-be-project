@@ -12,6 +12,9 @@ export class Transaction {
   @PrimaryGeneratedColumn()
   id: number;
 
+  @Column()
+  accountId: number;
+
   @ManyToOne(() => Account, (account) => account.transactions)
   account: Account;
 
