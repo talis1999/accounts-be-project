@@ -22,6 +22,6 @@ router.get("/:accountId", getAccountById);
 router.post("/", createNewAccount);
 
 //  PATCH account - block/ unblock
-router.patch("/", updateAccountActiveFlag);
+router.patch("/:accountId", updateAccountActiveFlag);
 
 export default router;
