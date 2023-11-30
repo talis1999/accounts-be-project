@@ -7,7 +7,7 @@ import {
   updateAccountActiveFlag,
 } from "../controllers/AccountController";
 
-const router = express.Router();
+const router = express.Router({ mergeParams: true });
 
 router.use("/:accountId/transactions", transactionRoutes);
 

@@ -6,24 +6,23 @@ import {
   CreateDateColumn,
   VersionColumn,
 } from "typeorm";
-import { User } from "./User";
 
 @Entity()
 export class Account {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => User, (user) => user.id)
-  user: User;
-
   @Column()
+  userId: number;
+
+  @Column({ default: 0 })
   balance: number;
 
   @Column()
   dailyWithdrawlLimit: number;
 
   @Column({ default: true })
-  activeFlag: number;
+  activeFlag: boolean;
 
   @Column()
   accountType: number;

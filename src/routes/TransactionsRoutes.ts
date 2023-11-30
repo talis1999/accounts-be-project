@@ -4,7 +4,7 @@ import {
   getAccountTransactions,
 } from "../controllers/TransactionsController";
 
-const router = express.Router();
+const router = express.Router({ mergeParams: true });
 
 // GET transactions by accountId
 router.get("/", getAccountTransactions);

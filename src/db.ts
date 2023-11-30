@@ -2,6 +2,7 @@ import "dotenv/config";
 import "reflect-metadata";
 import { DataSource } from "typeorm";
 import { User } from "./entities/User";
+import { Account } from "./entities/Account";
 
 const port: number = Number(process.env.DB_PORT || 5432);
 
@@ -14,7 +15,7 @@ export const AppDataSource = new DataSource({
   database: process.env.DB_NAME,
   synchronize: true,
   logging: false,
-  entities: [User],
+  entities: [User, Account],
   migrations: [],
   subscribers: [],
 });
