@@ -1,5 +1,5 @@
 import { AppDataSource } from "../db";
-import { User } from "../entity/User";
+import { User } from "../entities/User";
 
 interface NewUserData {
   name: string;

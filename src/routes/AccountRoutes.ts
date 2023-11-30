@@ -5,11 +5,15 @@ import {
   getAccountById,
   createNewAccount,
   updateAccountActiveFlag,
+  getAccounts,
 } from "../controllers/AccountController";
 
-const router = express.Router();
+const router = express.Router({ mergeParams: true });
 
 router.use("/:accountId/transactions", transactionRoutes);
+
+// GET user accounts
+router.get("/", getAccounts);
 
 // GET account by id
 router.get("/:accountId", getAccountById);
@@ -18,6 +22,6 @@ router.get("/:accountId", getAccountById);
 router.post("/", createNewAccount);
 
 //  PATCH account - block/ unblock
-router.patch("/", updateAccountActiveFlag);
+router.patch("/:accountId", updateAccountActiveFlag);
 
 export default router;
