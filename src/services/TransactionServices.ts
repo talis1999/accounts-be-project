@@ -29,7 +29,9 @@ const getTransactions = async (
   });
 };
 
-const getLastDayWithdrawl = (transactions: Transaction[] = []): number => {
+const getLastDayTotalTransaction = (
+  transactions: Transaction[] = []
+): number => {
   const dayAgo = new Date();
   dayAgo.setDate(dayAgo.getDate() - 1);
 
@@ -39,9 +41,11 @@ const getLastDayWithdrawl = (transactions: Transaction[] = []): number => {
 };
 
 const isDailyWithdrawlExceeded = (account: Account, value: number): boolean => {
-  const lastDayWithdrawl: number = getLastDayWithdrawl(account.transactions);
+  const lastDayTotalTransaction: number = getLastDayTotalTransaction(
+    account.transactions
+  );
   if (value >= 0) return false;
-  return (lastDayWithdrawl + value) * -1 > account.dailyWithdrawlLimit;
+  return (lastDayTotalTransaction + value) * -1 > account.dailyWithdrawlLimit;
 };
 
 const reportTransactionErrors = (
