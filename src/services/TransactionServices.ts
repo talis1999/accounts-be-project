@@ -4,6 +4,8 @@ import { Account } from "../entities/Account";
 import { Transaction } from "../entities/Transaction";
 import accountServices from "./AccountServices";
 
+export const TRANSACTION_ERROR_PREFIX: string = "Invalid transaction--";
+
 interface DateRange {
   from: Date;
   to: Date;
@@ -74,7 +76,7 @@ const createNewTransaction = async (
 
   if (!transactionErrorReport.isTransactionValid)
     throw new Error(
-      `Transaction error due to ${transactionErrorReport.reason}`
+      `${TRANSACTION_ERROR_PREFIX} ${transactionErrorReport.reason}`
     );
 
   // add here proper version control
@@ -92,6 +94,7 @@ const createNewTransaction = async (
 };
 
 export default {
+  TRANSACTION_ERROR_PREFIX,
   getTransactions,
   createNewTransaction,
 };

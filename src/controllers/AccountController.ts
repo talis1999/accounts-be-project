@@ -8,7 +8,7 @@ export const getAccounts = async (req: Request, res: Response) => {
 
     res.status(200).json(accounts);
   } catch (error) {
-    res.status(500).json({ error });
+    res.status(500).json(error);
   }
 };
 
@@ -20,12 +20,12 @@ export const getAccountById = async (req: Request, res: Response) => {
     const account = await accountServices.getAccountById(accountId);
 
     if (!account || account.userId !== userId) {
-      return res.status(404).json({ error: "account not found" });
+      return res.status(404).json({ message: "Account not found" });
     }
 
     res.status(200).json(account);
   } catch (error) {
-    res.status(500).json({ error });
+    res.status(500).json(error);
   }
 };
 
@@ -41,7 +41,7 @@ export const createNewAccount = async (req: Request, res: Response) => {
     });
     res.status(201).json(newAccount);
   } catch (error) {
-    res.status(500).json({ error });
+    res.status(500).json(error);
   }
 };
 
@@ -59,11 +59,11 @@ export const updateAccountActiveFlag = async (req: Request, res: Response) => {
     );
 
     if (!account) {
-      return res.status(404).json({ error: "account not found" });
+      return res.status(404).json({ message: "Account not found" });
     }
 
     res.status(200).json(account);
   } catch (error) {
-    res.status(500).json({ error });
+    res.status(500).json(error);
   }
 };

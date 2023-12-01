@@ -1,5 +1,7 @@
 import { Request, Response } from "express";
-import transactionServices from "../services/TransactionServices";
+import transactionServices, {
+  TRANSACTION_ERROR_PREFIX,
+} from "../services/TransactionServices";
 
 export const getAccountTransactions = async (req: Request, res: Response) => {
   const accountId: number = Number(req.params.accountId);
@@ -10,7 +12,7 @@ export const getAccountTransactions = async (req: Request, res: Response) => {
     );
     res.status(200).json(accounts);
   } catch (error) {
-    res.status(500).json({ error });
+    res.status(500).json(error);
   }
 };
 
@@ -19,12 +21,18 @@ export const createNewTransaction = async (req: Request, res: Response) => {
   const monetaryRequest: number = Number(req.body.monetaryRequest);
 
   try {
-    const new_transaction = await transactionServices.createNewTransaction(
+    const newTransaction = await transactionServices.createNewTransaction(
       accountId,
       monetaryRequest
     );
-    res.status(201).json(new_transaction);
+
+    if (!newTransaction)
+      return res.status(404).json({ message: "Account not found" });
+
+    res.status(201).json(newTransaction);
   } catch (error) {
-    res.status(500).json({ error });
+    if (error.message.includes(TRANSACTION_ERROR_PREFIX))
+      return res.status(400).json(error);
+    res.status(500).json(error);
   }
 };
