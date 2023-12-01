@@ -5,11 +5,12 @@ import transactionServices, {
 
 export const getAccountTransactions = async (req: Request, res: Response) => {
   const accountId: number = Number(req.params.accountId);
+  const { from, to } = req.query;
   try {
-    const accounts = await transactionServices.getTransactions(
-      accountId,
-      undefined
-    );
+    const accounts = await transactionServices.getTransactions(accountId, {
+      from: from ?? new Date(from),
+      to: to ?? new Date(to),
+    });
     res.status(200).json(accounts);
   } catch (error) {
     res.status(500).json(error);
@@ -18,6 +19,7 @@ export const getAccountTransactions = async (req: Request, res: Response) => {
 
 export const createNewTransaction = async (req: Request, res: Response) => {
   const accountId: number = Number(req.params.accountId);
+  // if positive - deposit, negative - withdrawl
   const monetaryRequest: number = Number(req.body.monetaryRequest);
 
   try {

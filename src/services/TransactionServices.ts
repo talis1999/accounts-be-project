@@ -40,6 +40,7 @@ const getLastDayTotalTransaction = (
     .reduce((accumulator, transaction) => accumulator + transaction.value, 0);
 };
 
+// ! - In this check daily deposits may cancel out daily withdrawls for porpose of daily withdrawl limit check
 const isDailyWithdrawlExceeded = (account: Account, value: number): boolean => {
   const lastDayTotalTransaction: number = getLastDayTotalTransaction(
     account.transactions
