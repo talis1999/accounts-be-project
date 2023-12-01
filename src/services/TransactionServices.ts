@@ -94,7 +94,6 @@ const createNewTransaction = async (
 };
 
 export default {
-  TRANSACTION_ERROR_PREFIX,
   getTransactions,
   createNewTransaction,
 };

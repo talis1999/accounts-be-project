@@ -16,12 +16,15 @@ export const getAccountById = async (req: Request, res: Response) => {
   const userId: number = Number(req.params.userId);
   const accountId: number = Number(req.params.accountId);
 
+  const { balanceOnly = false } = req.query;
+
   try {
     const account = await accountServices.getAccountById(accountId);
 
-    if (!account || account.userId !== userId) {
+    if (!account || account.userId !== userId)
       return res.status(404).json({ message: "Account not found" });
-    }
+
+    if (balanceOnly) res.status(200).json({ balance: account.balance });
 
     res.status(200).json(account);
   } catch (error) {
