@@ -3,12 +3,13 @@ import { AppDataSource } from "../db";
 import { Account } from "../entities/Account";
 import { Transaction } from "../entities/Transaction";
 import accountServices from "./AccountServices";
+import { buildSearchQuery } from "../utils/TransactionUtils";
 
 export const TRANSACTION_ERROR_PREFIX: string = "Invalid transaction--";
 
-interface DateRange {
-  from: Date;
-  to: Date;
+export interface DateRange {
+  from?: Date;
+  to?: Date;
 }
 
 interface TransactionErrorReport {
@@ -21,14 +22,10 @@ const transactionRepository = AppDataSource.getRepository(Transaction);
 
 const getTransactions = async (
   accountId: number,
-  dateRange: DateRange | undefined
+  dateRange: DateRange = {}
 ): Promise<Transaction[]> => {
-  const searchQuery: Record<string, unknown> = { account: { id: accountId } };
-
-  if (dateRange) searchQuery.createdAt = Between(dateRange.from, dateRange.to);
-
   return await transactionRepository.find({
-    where: searchQuery,
+    where: buildSearchQuery(accountId, dateRange),
   });
 };
 
