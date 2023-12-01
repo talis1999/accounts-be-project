@@ -14,7 +14,17 @@ export const getAccountTransactions = async (req: Request, res: Response) => {
   }
 };
 
-export const createNewTransaction = (req: Request, res: Response) => {
-  const { monetaryRequest } = req.body;
-  res.status(201).json({});
+export const createNewTransaction = async (req: Request, res: Response) => {
+  const accountId: number = Number(req.params.accountId);
+  const monetaryRequest: number = Number(req.body.monetaryRequest);
+
+  try {
+    const new_transaction = await transactionServices.createNewTransaction(
+      accountId,
+      monetaryRequest
+    );
+    res.status(201).json(new_transaction);
+  } catch (error) {
+    res.status(500).json({ error });
+  }
 };

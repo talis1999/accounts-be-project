@@ -8,24 +8,30 @@ interface NewAccountData {
   accountType: number;
 }
 
+const accountRepository = AppDataSource.getRepository(Account);
+
 const getAccounts = async (userId: number): Promise<Account[]> => {
-  return await AppDataSource.getRepository(Account).findBy({ userId });
+  return await accountRepository.findBy({ userId });
 };
 
-const getAccountById = async (id: number): Promise<Account | null> => {
-  return await AppDataSource.getRepository(Account).findOneBy({
-    id,
+const getAccountById = async (
+  id: number,
+  withTransactions: boolean = false
+): Promise<Account | null> => {
+  return await accountRepository.findOne({
+    where: { id },
+    relations: { transactions: withTransactions },
   });
 };
 
 const createNewAccount = async (
   accountData: NewAccountData
 ): Promise<Account> => {
-  const newAccount = AppDataSource.getRepository(Account).create(accountData);
-  return await AppDataSource.getRepository(Account).save(newAccount);
+  const newAccount = accountRepository.create(accountData);
+  return await accountRepository.save(newAccount);
 };
 
-const updateAccountsActiveFlag = async (
+const updateAccountActiveFlag = async (
   userId: number,
   accountId: number,
   activeFlag: boolean
@@ -33,7 +39,7 @@ const updateAccountsActiveFlag = async (
   const account = await getAccountById(accountId);
   if (!account || account.userId !== userId) return null;
 
-  return await AppDataSource.getRepository(Account).save({
+  return await accountRepository.save({
     ...account,
     activeFlag,
   });
@@ -43,5 +49,5 @@ export default {
   getAccounts,
   getAccountById,
   createNewAccount,
-  updateAccountsActiveFlag,
+  updateAccountActiveFlag,
 };
