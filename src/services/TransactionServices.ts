@@ -9,6 +9,11 @@ interface DateRange {
   to: Date;
 }
 
+interface TransactionErrorReport {
+  isTransactionValid: boolean;
+  reason?: string;
+}
+
 const accountRepository = AppDataSource.getRepository(Account);
 const transactionRepository = AppDataSource.getRepository(Transaction);
 
@@ -40,19 +45,37 @@ const isDailyWithdrawlExceeded = (account: Account, value: number): boolean => {
   return (lastDayWithdrawl + value) * -1 > account.dailyWithdrawlLimit;
 };
 
+const reportTransactionErrors = (
+  account: Account,
+  value: number
+): TransactionErrorReport => {
+  if (!account.activeFlag)
+    return { isTransactionValid: false, reason: "blocked account" };
+  if (account.balance + value < 0)
+    return { isTransactionValid: false, reason: "withdrawl exceeding balance" };
+  if (isDailyWithdrawlExceeded(account, value))
+    return {
+      isTransactionValid: false,
+      reason: "withdrawl exceeding the daily limit",
+    };
+
+  return { isTransactionValid: true };
+};
+
 const createNewTransaction = async (
   accountId: number,
   value: number
-): Promise<Transaction | null | Error> => {
+): Promise<Transaction | null> => {
   const account = await accountServices.getAccountById(accountId, true);
-
   if (!account) return null;
-  if (!account.activeFlag) return new Error("Invalid transaction");
-  if (account.balance + value < 0) return new Error("Invalid transaction");
-  if (value < 0 && getLastDayWithdrawl(account.transactions) + value)
-    return new Error("Invalid transaction");
-  if (isDailyWithdrawlExceeded(account, value))
-    return new Error("Invalid transaction");
+
+  const transactionErrorReport: TransactionErrorReport =
+    reportTransactionErrors(account, value);
+
+  if (!transactionErrorReport.isTransactionValid)
+    throw new Error(
+      `Transaction error due to ${transactionErrorReport.reason}`
+    );
 
   // add here proper version control
   await accountRepository.save({
