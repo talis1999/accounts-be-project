@@ -1,3 +1,4 @@
+import { FindOneOptions } from "typeorm";
 import { AppDataSource } from "../db";
 import { Account } from "../entities/Account";
 
@@ -8,24 +9,42 @@ interface NewAccountData {
   accountType: number;
 }
 
+interface FindAccountOptions {
+  withTransactions?: boolean;
+  searchByVersion?: number;
+}
+
+const accountRepository = AppDataSource.getRepository(Account);
+
 const getAccounts = async (userId: number): Promise<Account[]> => {
-  return await AppDataSource.getRepository(Account).findBy({ userId });
+  return await accountRepository.findBy({ userId });
 };
 
-const getAccountById = async (id: number): Promise<Account | null> => {
-  return await AppDataSource.getRepository(Account).findOneBy({
-    id,
-  });
+const getAccountById = async (
+  id: number,
+  findAccountOptions: FindAccountOptions = {}
+): Promise<Account | null> => {
+  const { withTransactions = false, searchByVersion } = findAccountOptions;
+  const query: FindOneOptions<Account> = {
+    relations: { transactions: withTransactions },
+  };
+  const searchQuery: Record<string, unknown> = { id };
+
+  if (typeof searchByVersion === "number")
+    searchQuery.version = searchByVersion;
+
+  query.where = searchQuery;
+  return await accountRepository.findOne(query);
 };
 
 const createNewAccount = async (
   accountData: NewAccountData
 ): Promise<Account> => {
-  const newAccount = AppDataSource.getRepository(Account).create(accountData);
-  return await AppDataSource.getRepository(Account).save(newAccount);
+  const newAccount = accountRepository.create(accountData);
+  return await accountRepository.save(newAccount);
 };
 
-const updateAccountsActiveFlag = async (
+const updateAccountActiveFlag = async (
   userId: number,
   accountId: number,
   activeFlag: boolean
@@ -33,7 +52,7 @@ const updateAccountsActiveFlag = async (
   const account = await getAccountById(accountId);
   if (!account || account.userId !== userId) return null;
 
-  return await AppDataSource.getRepository(Account).save({
+  return await accountRepository.save({
     ...account,
     activeFlag,
   });
@@ -43,5 +62,5 @@ export default {
   getAccounts,
   getAccountById,
   createNewAccount,
-  updateAccountsActiveFlag,
+  updateAccountActiveFlag,
 };

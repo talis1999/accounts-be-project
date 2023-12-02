@@ -7,19 +7,21 @@ interface NewUserData {
   birthDate: Date;
 }
 
+const userRepository = AppDataSource.getRepository(User);
+
 const getUsers = async (): Promise<User[]> => {
-  return await AppDataSource.getRepository(User).find({});
+  return await userRepository.find({});
 };
 
 const getUserById = async (id: number): Promise<User | null> => {
-  return await AppDataSource.getRepository(User).findOneBy({
+  return await userRepository.findOneBy({
     id,
   });
 };
 
 const createNewUser = async (userData: NewUserData): Promise<User> => {
-  const newPerson = AppDataSource.getRepository(User).create(userData);
-  return await AppDataSource.getRepository(User).save(newPerson);
+  const newPerson = userRepository.create(userData);
+  return await userRepository.save(newPerson);
 };
 
 export default {
