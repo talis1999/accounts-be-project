@@ -3,6 +3,7 @@ import { User } from "../entities/User";
 
 interface NewUserData {
   name: string;
+  password: string;
   document: string;
   birthDate: Date;
 }

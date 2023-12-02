@@ -2,9 +2,10 @@ import * as express from "express";
 
 import accountRoutes from "./AccountRoutes";
 import {
-  createNewUser,
+  //createNewUser,
   getUserById,
   getUsers,
+  register,
 } from "../controllers/UserController";
 
 const router = express.Router();
@@ -20,6 +21,8 @@ router.get("/", getUsers);
 router.get("/:userId", getUserById);
 
 // POST user
-router.post("/", createNewUser);
+// router.post("/", createNewUser);
+
+router.post("/register", register);
 
 export default router;
