@@ -1,3 +1,4 @@
+import { FindOneOptions } from "typeorm";
 import { AppDataSource } from "../db";
 import { Account } from "../entities/Account";
 
@@ -8,6 +9,12 @@ interface NewAccountData {
   accountType: number;
 }
 
+interface FindAccountOptions {
+  withTransactions?: boolean;
+  versionLock?: boolean;
+  searchByVersion?: number;
+}
+
 const accountRepository = AppDataSource.getRepository(Account);
 
 const getAccounts = async (userId: number): Promise<Account[]> => {
@@ -16,12 +23,29 @@ const getAccounts = async (userId: number): Promise<Account[]> => {
 
 const getAccountById = async (
   id: number,
-  withTransactions: boolean = false
+  findAccountOptions: FindAccountOptions = {}
 ): Promise<Account | null> => {
-  return await accountRepository.findOne({
-    where: { id },
+  const {
+    withTransactions = false,
+    versionLock = false,
+    searchByVersion,
+  } = findAccountOptions;
+  const query: FindOneOptions<Account> = {
     relations: { transactions: withTransactions },
-  });
+  };
+  const searchQuery: Record<string, unknown> = { id };
+
+  if (versionLock)
+    query.lock = {
+      mode: "pessimistic_write",
+      tables: ["account", "transaction"],
+    };
+
+  if (typeof searchByVersion === "number")
+    searchQuery.version = searchByVersion;
+
+  query.where = searchQuery;
+  return await accountRepository.findOne(query);
 };
 
 const createNewAccount = async (

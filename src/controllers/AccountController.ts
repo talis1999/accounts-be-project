@@ -24,7 +24,7 @@ export const getAccountById = async (req: Request, res: Response) => {
     if (!account || account.userId !== userId)
       return res.status(404).json({ message: "Account not found" });
 
-    if (balanceOnly) res.status(200).json({ balance: account.balance });
+    if (balanceOnly) return res.status(200).json({ balance: account.balance });
 
     res.status(200).json(account);
   } catch (error) {

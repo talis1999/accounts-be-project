@@ -70,7 +70,10 @@ const createNewTransaction = async (
   accountId: number,
   value: number
 ): Promise<Transaction | null> => {
-  const account = await accountServices.getAccountById(accountId, true);
+  const account = await accountServices.getAccountById(accountId, {
+    withTransactions: true,
+    versionLock: true,
+  });
   if (!account) return null;
 
   const transactionErrorReport: TransactionErrorReport =
@@ -81,11 +84,18 @@ const createNewTransaction = async (
       `${TRANSACTION_ERROR_PREFIX} ${transactionErrorReport.reason}`
     );
 
-  // add here proper version control
-  await accountRepository.save({
-    ...account,
-    balance: account.balance + value,
+  const accountUpdatePayload = await accountServices.getAccountById(accountId, {
+    withTransactions: true,
+    versionLock: true,
+    searchByVersion: account.version,
   });
+
+  if (!accountUpdatePayload)
+    throw new Error("Transactions version error, please try again");
+
+  accountUpdatePayload.balance = account.balance + value;
+
+  await accountRepository.save(accountUpdatePayload);
 
   const newTransaction = transactionRepository.create({
     accountId,
