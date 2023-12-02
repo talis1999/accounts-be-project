@@ -31,7 +31,8 @@ export const createNewTransaction = async (req: Request, res: Response) => {
   try {
     const newTransaction = await transactionServices.createNewTransaction(
       accountId,
-      monetaryRequest
+      monetaryRequest,
+      { retries: 3 }
     );
 
     if (!newTransaction)
