@@ -90,11 +90,12 @@ const createNewTransaction = async (
       `${TRANSACTION_ERROR_PREFIX} ${transactionErrorReport.reason}`
     );
 
-  const accountUpdatePayload = await accountServices.getAccountById(accountId, {
-    searchByVersion: account.version,
-  });
+  const updatedAccounts = await accountRepository.update(
+    { id: accountId, version: account.version },
+    { balance: account.balance + value }
+  );
 
-  if (!accountUpdatePayload) {
+  if (!updatedAccounts.affected) {
     const { currentTry = 0, retries = 0, delay = 500 } = retryOptions;
     if (currentTry + 1 <= retries) {
       await sleep(delay);
@@ -106,10 +107,6 @@ const createNewTransaction = async (
     }
     throw new Error("Transactions version error, please try again");
   }
-
-  accountUpdatePayload.balance = account.balance + value;
-
-  await accountRepository.save(accountUpdatePayload);
 
   const newTransaction = transactionRepository.create({
     accountId,
