@@ -19,7 +19,7 @@ export const getAccountTransactions = async (req: Request, res: Response) => {
     );
     res.status(200).json(accounts);
   } catch (error) {
-    res.status(500).json(error);
+    res.status(500).json({ error: error.message });
   }
 };
 
@@ -40,7 +40,7 @@ export const createNewTransaction = async (req: Request, res: Response) => {
     res.status(201).json(newTransaction);
   } catch (error) {
     if (error.message.includes(TRANSACTION_ERROR_PREFIX))
-      return res.status(400).json(error);
-    res.status(500).json(error);
+      return res.status(400).json({ error: error.message });
+    res.status(500).json({ error: error.message });
   }
 };

@@ -7,7 +7,7 @@ export const getUsers = async (req: Request, res: Response) => {
 
     res.status(200).json(users);
   } catch (error) {
-    res.status(500).json(error);
+    res.status(500).json({ error: error.message });
   }
 };
 
@@ -20,7 +20,7 @@ export const getUserById = async (req: Request, res: Response) => {
 
     res.status(200).json(user);
   } catch (error) {
-    res.status(500).json(error);
+    res.status(500).json({ error: error.message });
   }
 };
 
@@ -34,6 +34,6 @@ export const createNewUser = async (req: Request, res: Response) => {
     });
     res.status(201).json(newUser);
   } catch (error) {
-    res.status(500).json(error);
+    res.status(500).json({ error: error.message });
   }
 };
