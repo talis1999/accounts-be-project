@@ -72,7 +72,6 @@ const createNewTransaction = async (
 ): Promise<Transaction | null> => {
   const account = await accountServices.getAccountById(accountId, {
     withTransactions: true,
-    versionLock: true,
   });
   if (!account) return null;
 
@@ -86,7 +85,6 @@ const createNewTransaction = async (
 
   const accountUpdatePayload = await accountServices.getAccountById(accountId, {
     withTransactions: true,
-    versionLock: true,
     searchByVersion: account.version,
   });
 

@@ -11,7 +11,6 @@ interface NewAccountData {
 
 interface FindAccountOptions {
   withTransactions?: boolean;
-  versionLock?: boolean;
   searchByVersion?: number;
 }
 
@@ -25,21 +24,11 @@ const getAccountById = async (
   id: number,
   findAccountOptions: FindAccountOptions = {}
 ): Promise<Account | null> => {
-  const {
-    withTransactions = false,
-    versionLock = false,
-    searchByVersion,
-  } = findAccountOptions;
+  const { withTransactions = false, searchByVersion } = findAccountOptions;
   const query: FindOneOptions<Account> = {
     relations: { transactions: withTransactions },
   };
   const searchQuery: Record<string, unknown> = { id };
-
-  if (versionLock)
-    query.lock = {
-      mode: "pessimistic_write",
-      tables: ["account", "transaction"],
-    };
 
   if (typeof searchByVersion === "number")
     searchQuery.version = searchByVersion;
