@@ -1,9 +1,9 @@
-import { Between } from "typeorm";
 import { AppDataSource } from "../db";
 import { Account } from "../entities/Account";
 import { Transaction } from "../entities/Transaction";
 import accountServices from "./AccountServices";
 import { buildSearchQuery } from "../utils/TransactionUtils";
+import sleep from "../utils/sleep";
 
 export const TRANSACTION_ERROR_PREFIX: string = "Invalid transaction--";
 
@@ -15,6 +15,12 @@ export interface DateRange {
 interface TransactionErrorReport {
   isTransactionValid: boolean;
   reason?: string;
+}
+
+interface RetryOptions {
+  currentTry?: number;
+  retries?: number;
+  delay?: number;
 }
 
 const accountRepository = AppDataSource.getRepository(Account);
@@ -68,7 +74,8 @@ const reportTransactionErrors = (
 
 const createNewTransaction = async (
   accountId: number,
-  value: number
+  value: number,
+  retryOptions: RetryOptions = {}
 ): Promise<Transaction | null> => {
   const account = await accountServices.getAccountById(accountId, {
     withTransactions: true,
@@ -84,12 +91,21 @@ const createNewTransaction = async (
     );
 
   const accountUpdatePayload = await accountServices.getAccountById(accountId, {
-    withTransactions: true,
     searchByVersion: account.version,
   });
 
-  if (!accountUpdatePayload)
+  if (!accountUpdatePayload) {
+    const { currentTry = 0, retries = 0, delay = 500 } = retryOptions;
+    if (currentTry + 1 <= retries) {
+      await sleep(delay);
+      return await createNewTransaction(accountId, value, {
+        currentTry: currentTry + 1,
+        retries,
+        delay,
+      });
+    }
     throw new Error("Transactions version error, please try again");
+  }
 
   accountUpdatePayload.balance = account.balance + value;
 
