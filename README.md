@@ -1,4 +1,4 @@
-# Awesome Project Build with TypeORM
+# Node.js/ Express/ Typescript/ Postgres server project
 
 Steps to run this project:
 
