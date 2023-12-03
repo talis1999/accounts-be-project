@@ -1,6 +1,6 @@
 import * as Joi from "joi";
 
-export const accountByIdSchema = Joi.object({
+export const getAccountByIdSchema = Joi.object({
   balanceOnly: Joi.boolean(),
 });
 
@@ -10,6 +10,6 @@ export const accountSchema = Joi.object({
   accountType: Joi.number(),
 });
 
-export const accountActiveFlagSchema = Joi.object({
+export const updateAccountActiveFlagSchema = Joi.object({
   activeFlag: Joi.boolean().required(),
 });

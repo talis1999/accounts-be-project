@@ -10,8 +10,8 @@ import {
 import { authenticateToken } from "../middleware/authenticateToken";
 import { RequestKeys, joiValidation } from "../middleware/joiValidation";
 import {
-  accountActiveFlagSchema,
-  accountByIdSchema,
+  updateAccountActiveFlagSchema,
+  getAccountByIdSchema,
   accountSchema,
 } from "../joi_schemas/Account";
 
@@ -25,7 +25,7 @@ router.get("/", authenticateToken, getAccounts);
 // GET account by id
 router.get(
   "/:accountId",
-  [joiValidation(RequestKeys.Query)(accountByIdSchema), authenticateToken],
+  [joiValidation(RequestKeys.Query)(getAccountByIdSchema), authenticateToken],
   getAccountById
 );
 
@@ -39,7 +39,10 @@ router.post(
 //  PATCH account - block/ unblock
 router.patch(
   "/:accountId",
-  [joiValidation(RequestKeys.Body)(accountActiveFlagSchema), authenticateToken],
+  [
+    joiValidation(RequestKeys.Body)(updateAccountActiveFlagSchema),
+    authenticateToken,
+  ],
   updateAccountActiveFlag
 );
 
