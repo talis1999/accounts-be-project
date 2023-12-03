@@ -52,7 +52,7 @@ export const updateAccountActiveFlag = async (req: Request, res: Response) => {
   const userId: number = Number(req.userId);
   const accountId: number = Number(req.params.accountId);
 
-  const { activeFlag = true } = req.body;
+  const { activeFlag } = req.body;
 
   try {
     const account = await accountServices.updateAccountActiveFlag(
