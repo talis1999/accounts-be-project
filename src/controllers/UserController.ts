@@ -3,6 +3,7 @@ import { Request, Response } from "express";
 import * as bcrypt from "bcrypt";
 import * as jwt from "jsonwebtoken";
 import userServices from "../services/UserServices";
+import { DEFAULT_JWT_SECRET } from "../ constants/constants";
 
 export const register = async (req: Request, res: Response) => {
   const { name, password, document, birthDate } = req.body;
@@ -36,7 +37,7 @@ export const login = async (req: Request, res: Response) => {
 
     const token: string = jwt.sign(
       { userId: user.id },
-      process.env.JWT_SECRET || "",
+      process.env.JWT_SECRET || DEFAULT_JWT_SECRET,
       { expiresIn: "1h" }
     );
 
