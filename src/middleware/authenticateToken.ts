@@ -1,6 +1,7 @@
 import "dotenv/config";
 import { Request, Response, NextFunction } from "express";
 import * as jwt from "jsonwebtoken";
+import { DEFAULT_JWT_SECRET } from "../ constants/constants";
 
 export const authenticateToken = (
   req: Request,
@@ -13,7 +14,7 @@ export const authenticateToken = (
 
   jwt.verify(
     token,
-    process.env.JWT_SECRET || "",
+    process.env.JWT_SECRET || DEFAULT_JWT_SECRET,
     (err: jwt.VerifyErrors, data: jwt.JwtPayload) => {
       if (err) return res.status(401).json({ message: "Invalid token" });
 
