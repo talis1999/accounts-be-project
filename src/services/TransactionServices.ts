@@ -12,6 +12,13 @@ export interface DateRange {
   to?: Date;
 }
 
+interface CreateNewTransactionArgs {
+  userId: number;
+  accountId: number;
+  value: number;
+  retryOptions: RetryOptions;
+}
+
 interface TransactionErrorReport {
   isTransactionValid: boolean;
   reason?: string;
@@ -72,15 +79,16 @@ const reportTransactionErrors = (
   return { isTransactionValid: true };
 };
 
-const createNewTransaction = async (
-  accountId: number,
-  value: number,
-  retryOptions: RetryOptions = {}
-): Promise<Transaction | null> => {
+const createNewTransaction = async ({
+  userId,
+  accountId,
+  value,
+  retryOptions = {},
+}: CreateNewTransactionArgs): Promise<Transaction | null> => {
   const account = await accountServices.getAccountById(accountId, {
     withTransactions: true,
   });
-  if (!account) return null;
+  if (!account || account.userId !== userId) return null;
 
   const transactionErrorReport: TransactionErrorReport =
     reportTransactionErrors(account, value);
@@ -99,10 +107,15 @@ const createNewTransaction = async (
     const { currentTry = 0, retries = 0, delay = 500 } = retryOptions;
     if (currentTry + 1 <= retries) {
       await sleep(delay);
-      return await createNewTransaction(accountId, value, {
-        currentTry: currentTry + 1,
-        retries,
-        delay,
+      return await createNewTransaction({
+        userId,
+        accountId,
+        value,
+        retryOptions: {
+          currentTry: currentTry + 1,
+          retries,
+          delay,
+        },
       });
     }
     throw new Error("Transactions version error, please try again");
