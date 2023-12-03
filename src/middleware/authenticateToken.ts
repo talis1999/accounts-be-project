@@ -7,14 +7,18 @@ export const authenticateToken = (
   res: Response,
   next: NextFunction
 ) => {
-  const token: string = req.cookies.authcookie;
+  const token: string = req.cookies.authToken;
 
   if (!token) return res.status(401).send("Invalid token");
 
-  jwt.verify(token, process.env.JWT_SECRET || "", (err: any, user: any) => {
-    if (err) return res.status(401).send("Invalid token");
+  jwt.verify(
+    token,
+    process.env.JWT_SECRET || "",
+    (err: jwt.VerifyErrors, data: jwt.JwtPayload) => {
+      if (err) return res.status(401).send("Invalid token");
 
-    req.user = user;
-    next();
-  });
+      req.userId = data.userId;
+      next();
+    }
+  );
 };

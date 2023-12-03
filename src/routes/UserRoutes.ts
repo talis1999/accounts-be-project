@@ -5,6 +5,7 @@ import {
   //createNewUser,
   getUserById,
   getUsers,
+  login,
   register,
 } from "../controllers/UserController";
 
@@ -24,5 +25,7 @@ router.get("/:userId", getUserById);
 // router.post("/", createNewUser);
 
 router.post("/register", register);
+
+router.post("/login", login);
 
 export default router;

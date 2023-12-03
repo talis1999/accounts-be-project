@@ -25,8 +25,15 @@ const createNewUser = async (userData: NewUserData): Promise<User> => {
   return await userRepository.save(newPerson);
 };
 
+const getUserByName = async (name: string): Promise<User | null> => {
+  return await userRepository.findOneBy({
+    name,
+  });
+};
+
 export default {
   getUsers,
   getUserById,
   createNewUser,
+  getUserByName,
 };
