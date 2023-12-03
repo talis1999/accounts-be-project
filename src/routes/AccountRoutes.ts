@@ -7,21 +7,22 @@ import {
   updateAccountActiveFlag,
   getAccounts,
 } from "../controllers/AccountController";
+import { authenticateToken } from "../middleware/authenticateToken";
 
 const router = express.Router({ mergeParams: true });
 
 router.use("/:accountId/transactions", transactionRoutes);
 
 // GET user accounts
-router.get("/", getAccounts);
+router.get("/", authenticateToken, getAccounts);
 
 // GET account by id
-router.get("/:accountId", getAccountById);
+router.get("/:accountId", authenticateToken, getAccountById);
 
 // POST account
-router.post("/", createNewAccount);
+router.post("/", authenticateToken, createNewAccount);
 
 //  PATCH account - block/ unblock
-router.patch("/:accountId", updateAccountActiveFlag);
+router.patch("/:accountId", authenticateToken, updateAccountActiveFlag);
 
 export default router;
