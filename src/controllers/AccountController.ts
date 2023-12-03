@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import accountServices from "../services/AccountServices";
 
 export const getAccounts = async (req: Request, res: Response) => {
-  const userId: number = Number(req.params.userId);
+  const userId: number = Number(req.userId);
   try {
     const accounts = await accountServices.getAccounts(userId);
 
@@ -13,7 +13,7 @@ export const getAccounts = async (req: Request, res: Response) => {
 };
 
 export const getAccountById = async (req: Request, res: Response) => {
-  const userId: number = Number(req.params.userId);
+  const userId: number = Number(req.userId);
   const accountId: number = Number(req.params.accountId);
 
   const { balanceOnly = false } = req.query;
@@ -33,7 +33,7 @@ export const getAccountById = async (req: Request, res: Response) => {
 };
 
 export const createNewAccount = async (req: Request, res: Response) => {
-  const userId: number = Number(req.params.userId);
+  const userId: number = Number(req.userId);
   const { balance = 0, dailyWithdrawlLimit = 0, accountType = 0 } = req.body;
   try {
     const newAccount = await accountServices.createNewAccount({
@@ -49,7 +49,7 @@ export const createNewAccount = async (req: Request, res: Response) => {
 };
 
 export const updateAccountActiveFlag = async (req: Request, res: Response) => {
-  const userId: number = Number(req.params.userId);
+  const userId: number = Number(req.userId);
   const accountId: number = Number(req.params.accountId);
 
   const { activeFlag = true } = req.body;

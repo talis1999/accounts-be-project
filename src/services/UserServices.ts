@@ -3,29 +3,25 @@ import { User } from "../entities/User";
 
 interface NewUserData {
   name: string;
+  password: string;
   document: string;
   birthDate: Date;
 }
 
 const userRepository = AppDataSource.getRepository(User);
 
-const getUsers = async (): Promise<User[]> => {
-  return await userRepository.find({});
-};
-
-const getUserById = async (id: number): Promise<User | null> => {
-  return await userRepository.findOneBy({
-    id,
-  });
-};
-
 const createNewUser = async (userData: NewUserData): Promise<User> => {
   const newPerson = userRepository.create(userData);
   return await userRepository.save(newPerson);
 };
 
+const getUserByName = async (name: string): Promise<User | null> => {
+  return await userRepository.findOneBy({
+    name,
+  });
+};
+
 export default {
-  getUsers,
-  getUserById,
   createNewUser,
+  getUserByName,
 };
