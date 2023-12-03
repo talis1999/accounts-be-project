@@ -8,6 +8,12 @@ import {
   getAccounts,
 } from "../controllers/AccountController";
 import { authenticateToken } from "../middleware/authenticateToken";
+import { RequestKeys, joiValidation } from "../middleware/joiValidation";
+import {
+  accountActiveFlagSchema,
+  accountByIdSchema,
+  accountSchema,
+} from "../joi_schemas/Account";
 
 const router = express.Router({ mergeParams: true });
 
@@ -17,12 +23,24 @@ router.use("/:accountId/transactions", transactionRoutes);
 router.get("/", authenticateToken, getAccounts);
 
 // GET account by id
-router.get("/:accountId", authenticateToken, getAccountById);
+router.get(
+  "/:accountId",
+  [joiValidation(RequestKeys.Query)(accountByIdSchema), authenticateToken],
+  getAccountById
+);
 
 // POST account
-router.post("/", authenticateToken, createNewAccount);
+router.post(
+  "/",
+  [joiValidation(RequestKeys.Body)(accountSchema), authenticateToken],
+  createNewAccount
+);
 
 //  PATCH account - block/ unblock
-router.patch("/:accountId", authenticateToken, updateAccountActiveFlag);
+router.patch(
+  "/:accountId",
+  [joiValidation(RequestKeys.Body)(accountActiveFlagSchema), authenticateToken],
+  updateAccountActiveFlag
+);
 
 export default router;
